@@ -1,6 +1,9 @@
-import Image, { type ImageProps } from "next/image";
-import { Button } from "@repo/ui/button";
-import styles from "./page.module.css";
+import Image, { type ImageProps } from 'next/image';
+
+import { stringAdd } from '@repo/services/index';
+import { Button } from '@repo/ui/button';
+
+import styles from './page.module.css';
 
 type Props = Omit<ImageProps, "src"> & {
   srcLight: string;
@@ -18,6 +21,7 @@ const ThemeImage = (props: Props) => {
   );
 };
 
+console.log()
 export default function Home() {
   return (
     <div className={styles.page}>
@@ -63,8 +67,11 @@ export default function Home() {
             Read our docs
           </a>
         </div>
-        <Button appName="web" className={styles.secondary}>
-          Open alert
+        <Button> 
+          Text
+        </Button>
+        <Button className={styles.secondary}>
+          Open alert{stringAdd('asd')}
         </Button>
       </main>
       <footer className={styles.footer}>
