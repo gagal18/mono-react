@@ -52,5 +52,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.DO_USER }}@${{ secrets.DO_IP }} << 'EOF'
             cd /var/docker/mnr
             docker-compose pull  
+            docker-compose down
             docker-compose up -d 
           EOF
