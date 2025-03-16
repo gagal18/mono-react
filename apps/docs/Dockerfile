@@ -12,7 +12,7 @@ WORKDIR /app
 
 # Install all dependencies in the root
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+RUN pnpm install 
 
 # Copy the rest of the application
 COPY . .
@@ -21,7 +21,7 @@ COPY . .
 RUN turbo prune --docker --scope=docs
 
 # Install dependencies for the `docs` app in the pruned workspace
-RUN pnpm install --frozen-lockfile
+RUN pnpm install 
 
 # Build the Next.js app in the `docs` app (should generate .next/standalone)
 RUN pnpm turbo run build --filter=docs...
@@ -30,7 +30,7 @@ RUN pnpm turbo run build --filter=docs...
 FROM base AS installer
 
 # Install dependencies for the "docs" app in the pruned workspace
-RUN pnpm install --frozen-lockfile
+RUN pnpm install 
 
 # Build the project again (to ensure everything is correctly built)
 RUN pnpm turbo run build --filter=docs...
