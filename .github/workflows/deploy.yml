@@ -23,28 +23,37 @@ jobs:
 
       - name: Install Docker using Docker's official script
         run: |
-            curl -fsSL https://get.docker.com -o get-docker.sh
-            sudo sh get-docker.sh
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
         continue-on-error: false
+
       - name: Install Docker Compose
         run: |
-            sudo curl -L "https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            sudo chmod +x /usr/local/bin/docker-compose
-            docker-compose --version
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
         continue-on-error: false
-          
-      - name: Build and push Docker image
+
+      - name: Build and push Docker images
         run: |
+          IMAGE_TAG_WEB=gagal18/mnr/web:latest
           docker-compose -f docker-compose.yml build
-          docker-compose -f docker-compose.yml push
-          
+          docker tag mnr_web:latest $IMAGE_TAG_WEB
+          docker push $IMAGE_TAG_WEB
+
+          IMAGE_TAG_DOCS=gagal18/mnr/docs:latest
+          docker-compose -f docker-compose.yml build --no-cache docs
+          docker tag mnr_docs:latest $IMAGE_TAG_DOCS
+          docker push $IMAGE_TAG_DOCS
+
       - name: Copy docker-compose.yml to the Droplet
         run: |
           scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.DO_USER }}@${{ secrets.DO_IP }}:/var/docker/mnr/docker-compose.yml
+
       - name: SSH into Droplet and Deploy
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.DO_USER }}@${{ secrets.DO_IP }} << 'EOF'
-            cd /var/docker/mnr 
-            docker-compose pull
-            docker-compose up -d
+            cd /var/docker/mnr
+            docker-compose pull  
+            docker-compose up -d 
           EOF
