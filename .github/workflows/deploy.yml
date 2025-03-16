@@ -20,13 +20,13 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.DO_SECRET }}
-      - name: docker login
+      - name: Docker Registry Log in
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DO_HUB_USER }}
           password: ${{ secrets.DO_HUB_PW }}
 
-      - name: build and push web
+      - name: Build and Push Web
         id: build-push-web
         uses: docker/build-push-action@v3
         with:
@@ -35,7 +35,7 @@ jobs:
           push: true
           tags: gagal1818/mnr_web:latest
 
-      - name: build and push docs
+      - name: Build and Push Docs
         id: build-push-docs
         uses: docker/build-push-action@v3
         with:
@@ -44,11 +44,10 @@ jobs:
           push: true
           tags: gagal1818/mnr_docs:latest
 
-      - name: Copy docker-compose.yml to the Droplet
+      - name: Copy docker-compose.yml to the remote server
         run: |
           scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.DO_USER }}@${{ secrets.DO_IP }}:/var/docker/mnr/docker-compose.yml
-
-      - name: SSH into Droplet and Deploy
+      - name: Pull and Start the container
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.DO_USER }}@${{ secrets.DO_IP }} << 'EOF'
             cd /var/docker/mnr
