@@ -22,7 +22,7 @@ jobs:
           ssh-private-key: ${{ secrets.DO_SECRET }}
 
       - name: Install Docker using Docker's official script
-          run: |
+        run: |
             curl -fsSL https://get.docker.com -o get-docker.sh
             sudo sh get-docker.sh
         continue-on-error: false
