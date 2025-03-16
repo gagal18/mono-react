@@ -20,29 +20,29 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.DO_SECRET }}
+      - name: docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DO_HUB_USER }}
+          password: ${{ secrets.DO_HUB_PW }}
 
-      - name: Install Docker using Docker's official script
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sudo sh get-docker.sh
-        continue-on-error: false
+      - name: build and push web
+        id: build-push-web
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./apps/web/Dockerfile
+          push: true
+          tags: gagal1818/mnr_web:latest
 
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-        continue-on-error: false
-
-      - name: Build and push Docker images
-        run: |
-          docker-compose -f docker-compose.yml build
-
-          docker tag mnr_web:latest gagal1818/mnr_web:latest
-          docker tag mnr_docs:latest gagal1818/mnr_docs:latest
-
-          docker push gagal1818/mnr_web:latest
-          docker push gagal1818/mnr_docs:latest
+      - name: build and push docs
+        id: build-push-docs
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./apps/docs/Dockerfile
+          push: true
+          tags: gagal1818/mnr_docs:latest
 
       - name: Copy docker-compose.yml to the Droplet
         run: |
