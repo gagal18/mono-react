@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   web:
-    image: gagal18/mnr/web:latest
+    image: gagal1818/mnr_web:latest
     ports:
       - "3000:3000"
     environment:
@@ -11,7 +11,7 @@ services:
       - nextjs-network
 
   docs:
-    image: gagal18/mnr/docs:latest
+    image: gagal1818/mnr_docs:latest
     ports:
       - "3001:3000"
     environment:

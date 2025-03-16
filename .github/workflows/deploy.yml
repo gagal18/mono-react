@@ -36,15 +36,13 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          IMAGE_TAG_WEB=gagal18/mnr/web:latest
           docker-compose -f docker-compose.yml build
-          docker tag mnr_web:latest $IMAGE_TAG_WEB
-          docker push $IMAGE_TAG_WEB
 
-          IMAGE_TAG_DOCS=gagal18/mnr/docs:latest
-          docker-compose -f docker-compose.yml build --no-cache docs
-          docker tag mnr_docs:latest $IMAGE_TAG_DOCS
-          docker push $IMAGE_TAG_DOCS
+          docker tag mnr_web:latest gagal1818/mnr_web:latest
+          docker tag mnr_docs:latest gagal1818/mnr_docs:latest
+
+          docker push gagal1818/mnr_web:latest
+          docker push gagal1818/mnr_docs:latest
 
       - name: Copy docker-compose.yml to the Droplet
         run: |
